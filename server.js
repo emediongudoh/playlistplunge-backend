@@ -28,6 +28,9 @@ if (!fs.existsSync(downloadDir)) {
     fs.mkdirSync(downloadDir, { recursive: true });
 }
 
+// Get path to cookies.txt in the same folder as server.js
+const cookiesFilePath = path.join(__dirname, 'cookies.txt');
+
 function getExistingFiles() {
     return fs
         .readdirSync(downloadDir)
@@ -49,7 +52,7 @@ app.get('/download', (req, res) => {
     const existingFiles = getExistingFiles();
 
     // yt-dlp command to download the playlist
-    const command = `yt-dlp --progress --no-post-overwrites --ignore-errors -o "${downloadDir}/%(title)s.%(ext)s" ${playlistUrl}`;
+    const command = `yt-dlp --cookies ${cookiesFilePath} --progress --no-post-overwrites --ignore-errors -o "${downloadDir}/%(title)s.%(ext)s" ${playlistUrl}`;
     const process = exec(command);
 
     process.stdout.on('data', data => {
